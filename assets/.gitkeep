@@ -1,0 +1,8 @@
+Coloca aqui los archivos de la animacion:
+
+- logo.png    → Logo de INERTIX (PNG transparente, ~800px ancho)
+- socio1.png  → Foto del Ing. Samuel (retrato)
+- socio2.png  → Foto del Ing. Carlos (retrato)
+
+Formatos: PNG, JPG, WebP
+Si no hay logo.png se usa texto "INERTIX" como fallback.
