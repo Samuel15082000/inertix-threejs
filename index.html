@@ -3,61 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INERTIX - Presentacion Socios | Three.js 9:16</title>
+    <title>INERTIX - Presentacion Socios</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-        }
-        #canvas-container {
-            position: relative;
-            width: 1080px;
-            height: 1920px;
-            transform-origin: center center;
-        }
-        canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
-        #three-canvas { z-index: 1; }
-        #overlay { z-index: 10; pointer-events: none; }
-        #controls {
-            position: fixed;
-            bottom: 20px; left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex; gap: 12px;
-            background: rgba(0,0,0,0.9);
-            padding: 14px 28px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,208,0,0.4);
-            backdrop-filter: blur(10px);
-        }
-        .btn {
-            padding: 10px 22px;
-            border: 2px solid #ffd000;
-            background: transparent;
-            color: #ffd000;
-            font-weight: 700; font-size: 14px;
-            border-radius: 8px; cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Poppins', sans-serif;
-        }
-        .btn:hover { background: #ffd000; color: #000; }
-        .btn.active { border-color: #e8232a; color: #e8232a; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        #status { color: #aaa; font-size: 13px; display: flex; align-items: center; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#04060c;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Poppins',sans-serif;overflow:hidden}
+        #canvas-container{position:relative;width:1080px;height:1920px;transform-origin:center center}
+        canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+        #three-canvas{z-index:1}
+        #overlay{z-index:10;pointer-events:none}
+        #controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:12px;align-items:center;background:rgba(0,0,0,0.92);padding:14px 28px;border-radius:14px;border:1px solid rgba(26,86,204,0.4);backdrop-filter:blur(10px)}
+        .btn{padding:10px 22px;border:2px solid #1a56cc;background:transparent;color:#1a56cc;font-weight:700;font-size:14px;border-radius:8px;cursor:pointer;transition:all 0.2s;font-family:'Poppins',sans-serif}
+        .btn:hover{background:#1a56cc;color:#fff}
+        .btn.active{border-color:#e8232a;color:#e8232a;animation:pulse 1s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        #status{color:#aaa;font-size:13px}
+        #timer{color:#1a56cc;font-size:13px;font-weight:600;margin-left:8px}
     </style>
 </head>
 <body>
@@ -67,10 +30,10 @@
     </div>
     <div id="controls">
         <button class="btn" id="btn-play">&#9654; PLAY</button>
-        <button class="btn" id="btn-record">&#9679; GRABAR WebM</button>
+        <button class="btn" id="btn-record">&#9679; GRABAR</button>
         <span id="status">Listo</span>
+        <span id="timer">0:00</span>
     </div>
-
     <script type="importmap">
     {
         "imports": {
