@@ -277,16 +277,17 @@ var bgVert = [
     "}"
 ].join("\n");
 
-// Scene 1: 40% white top, 60% blue bottom
+// Scene 1: 50% white top, 50% navy bottom, clean split with subtle curve
 var bg1Frag = [
     "uniform float opacity;",
     "varying vec2 vUv;",
     "void main() {",
-    "  float cutoff = 0.60;",
-    "  float edge = smoothstep(cutoff - 0.02, cutoff + 0.02, vUv.y);",
-    "  vec3 white = vec3(0.96, 0.97, 1.0);",
-    "  vec3 blue = vec3(0.04, 0.12, 0.32);",
-    "  vec3 color = mix(blue, white, edge);",
+    "  float cutoff = 0.50;",
+    "  float wave = sin(vUv.x * 3.14159) * 0.015;",
+    "  float edge = smoothstep(cutoff + wave - 0.008, cutoff + wave + 0.008, vUv.y);",
+    "  vec3 white = vec3(0.97, 0.98, 1.0);",
+    "  vec3 navy = vec3(0.035, 0.08, 0.22);",
+    "  vec3 color = mix(navy, white, edge);",
     "  gl_FragColor = vec4(color, opacity);",
     "}"
 ].join("\n");
@@ -549,38 +550,37 @@ function renderScene1(t) {
     var ga = 1;
     if (t > D1 - 0.35) ga = 1 - (t - (D1 - 0.35)) / 0.35;
 
-    // Logo top
+    // === TOP HALF (white background) ===
+    // Logo - centered in top zone
     var lp = easeOut(Math.min(1, t / 0.5), 4);
-    var ly = lerp(-100, H * 0.03, lp);
+    var ly = lerp(-100, H * 0.02, lp);
     var ls = t < 0.55 ? 1 + 0.08 * Math.max(0, 1 - (t - 0.45) / 0.12) * (1 - lp) : 1;
-    drawLogo(W/2, ly, ls, lp * ga);
+    drawLogo(W/2, ly, ls * 0.9, lp * ga);
 
-    // Title below logo - dark blue color on white bg
-    var eyA = easeOut(Math.max(0, (t - 0.4) / 0.4));
-    drawText("INGENIERIA & CONSTRUCCION", W/2, H * 0.03 + 130, {font: "600 32px Poppins", color: NAVY, alpha: eyA * ga});
+    // Title below logo - DARK color (on white bg)
+    var eyA = easeOut(Math.max(0, (t - 0.35) / 0.4));
+    drawText("INGENIERIA & CONSTRUCCION", W/2, H * 0.15, {font: "600 30px Poppins", color: NAVY, alpha: eyA * ga});
 
-    // Main tagline in blue zone
-    var ta = easeOut(Math.max(0, (t - 0.6) / 0.5));
-    var to = (1 - ta) * 60;
-    drawText("Transformando", W/2, H * 0.28 + to, {font: "900 110px Poppins", color: WHITE, alpha: ta * ga, shadow: true});
-    drawText("Bolivia", W/2, H * 0.28 + 120 + to, {font: "900 110px Poppins", color: WHITE, alpha: ta * ga, shadow: true});
+    // Tagline in top white zone - dark text
+    var ta = easeOut(Math.max(0, (t - 0.55) / 0.5));
+    var to = (1 - ta) * 50;
+    drawText("Transformando", W/2, H * 0.20 + to, {font: "900 95px Poppins", color: NAVY, alpha: ta * ga});
+    drawText("Bolivia", W/2, H * 0.20 + 100 + to, {font: "900 95px Poppins", color: NAVY, alpha: ta * ga});
 
-    // Divider
-    drawDivider((W - 280) / 2, H * 0.28 + 260, 280, easeOut(Math.max(0, (t - 1.0) / 0.4)) * ga);
+    // Subtitle - still in white zone
+    drawText("Soluciones tecnicas al mas alto nivel", W/2, H * 0.20 + 210, {font: "400 30px Poppins", color: "rgba(11,31,82,0.7)", alpha: easeOut(Math.max(0, (t - 1.0) / 0.5)) * ga});
 
-    // Sub
-    drawText("Soluciones tecnicas al mas alto nivel", W/2, H * 0.28 + 285, {font: "400 34px Poppins", color: "rgba(248,249,255,0.8)", alpha: easeOut(Math.max(0, (t - 1.1) / 0.5)) * ga});
-
-    // Service blocks 4 columns
-    var blockW = 220, gap = 25;
+    // === BOTTOM HALF (navy background) ===
+    // Service blocks 4 columns - fill the navy zone
+    var blockW = 225, gap = 20;
     var totalW = blockW * 4 + gap * 3;
     var startX = (W - totalW) / 2;
-    var blockY = H * 0.55;
+    var blockY = H * 0.54;
     for (var i = 0; i < 4; i++) {
-        var delay = 1.3 + i * 0.15;
+        var delay = 1.2 + i * 0.15;
         var ba = easeOut(Math.max(0, (t - delay) / 0.4));
         var off = (1 - ba) * 50;
-        drawServiceBlock(startX + i * (blockW + gap), blockY + off, i, ba * ga, blockW, 260);
+        drawServiceBlock(startX + i * (blockW + gap), blockY + off, i, ba * ga, blockW, 280);
     }
 }
 
