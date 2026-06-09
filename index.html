@@ -1,47 +1,389 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INERTIX - Presentacion Socios</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#04060c;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Poppins',sans-serif;overflow:hidden}
-        #canvas-container{position:relative;width:1080px;height:1920px;transform-origin:center center}
-        canvas{position:absolute;top:0;left:0;width:100%;height:100%}
-        #three-canvas{z-index:1}
-        #overlay{z-index:10;pointer-events:none}
-        #controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;gap:12px;align-items:center;background:rgba(0,0,0,0.92);padding:14px 28px;border-radius:14px;border:1px solid rgba(26,86,204,0.4);backdrop-filter:blur(10px)}
-        .btn{padding:10px 22px;border:2px solid #1a56cc;background:transparent;color:#1a56cc;font-weight:700;font-size:14px;border-radius:8px;cursor:pointer;transition:all 0.2s;font-family:'Poppins',sans-serif}
-        .btn:hover{background:#1a56cc;color:#fff}
-        .btn.active{border-color:#e8232a;color:#e8232a;animation:pulse 1s infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-        #status{color:#aaa;font-size:13px}
-        #timer{color:#1a56cc;font-size:13px;font-weight:600;margin-left:8px}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INERTIX — Presentacion de Socios</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#0B1F52;
+  --blue2:#1440A0;
+  --electric:#1A56CC;
+  --white:#F8F9FF;
+  --dark:#04060C;
+  --gold:#FFD000;
+}
+html,body{
+  background:#000;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;font-family:'Poppins',sans-serif;
+  overflow:hidden;user-select:none;
+  margin:0;padding:0;width:100vw;height:100vh;
+}
+#stage{
+  width:1080px;height:1920px;
+  position:relative;overflow:hidden;
+  transform-origin:center center;
+}
+#slides{display:flex;height:100%;transition:transform 0.7s cubic-bezier(0.77,0,0.175,1);}
+.slide{
+  flex:0 0 1080px;width:1080px;height:1920px;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;
+}
+.slide>*{position:relative;z-index:3;}
+
+/* noise overlay */
+.noise{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:256px;opacity:0.3;
+}
+
+/* progress bar */
+#pb{position:absolute;top:0;left:0;right:0;z-index:200;display:flex;gap:6px;padding:18px 24px 0;}
+.ps{flex:1;height:4px;background:rgba(255,255,255,0.12);border-radius:3px;overflow:hidden;}
+.pf{height:100%;border-radius:3px;width:0%;background:var(--electric);}
+
+/* nav */
+.nav-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:200;background:none;border:none;color:rgba(255,255,255,0.25);font-size:48px;cursor:pointer;padding:20px;transition:color 0.2s;line-height:1;}
+.nav-btn:hover{color:var(--white);}
+#np{left:0;}#nn{right:0;}
+#pi{position:absolute;bottom:20px;right:24px;z-index:200;color:rgba(255,255,255,0.4);font-size:18px;cursor:pointer;font-weight:600;}
+
+/* ═══════════════════════════════════
+   SLIDE 1 — PRESENTACION EMPRESA
+═══════════════════════════════════ */
+#s1{
+  background:linear-gradient(180deg, #f0f4ff 0%, #f0f4ff 48%, #0B1F52 48%, #071640 100%);
+}
+#s1 .curve-divider{
+  position:absolute;top:46%;left:0;right:0;z-index:2;
+  height:80px;pointer-events:none;
+}
+#s1 .curve-divider svg{width:100%;height:100%;display:block;}
+
+#s1 .inner{
+  display:flex;flex-direction:column;align-items:center;
+  height:100%;width:100%;padding:60px 40px 50px;
+  justify-content:space-between;
+}
+#s1 .top-section{display:flex;flex-direction:column;align-items:center;gap:16px;}
+#s1 .logo-img{height:90px;filter:drop-shadow(0 4px 20px rgba(26,86,204,0.3));}
+#s1 .eyebrow{
+  font-size:18px;font-weight:600;letter-spacing:0.15em;
+  color:var(--blue);text-transform:uppercase;margin-top:8px;
+}
+#s1 .title{
+  font-size:82px;font-weight:900;line-height:1.0;
+  color:var(--blue);text-align:center;letter-spacing:-0.02em;
+  margin-top:10px;
+}
+#s1 .sub{
+  font-size:26px;font-weight:400;color:rgba(11,31,82,0.6);
+  text-align:center;line-height:1.5;max-width:700px;margin-top:8px;
+}
+
+#s1 .bottom-section{display:flex;flex-direction:column;align-items:center;gap:30px;width:100%;}
+#s1 .services-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:20px;
+  width:100%;max-width:980px;
+}
+#s1 .svc-card{
+  background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(26,86,204,0.25);
+  border-radius:18px;padding:24px 16px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  text-align:center;
+  backdrop-filter:blur(4px);
+}
+#s1 .svc-card img{width:80px;height:80px;object-fit:contain;border-radius:10px;}
+#s1 .svc-card .svc-name{font-size:16px;font-weight:700;color:var(--white);line-height:1.2;}
+#s1 .svc-card .svc-keys{font-size:13px;font-weight:400;color:rgba(248,249,255,0.55);line-height:1.4;}
+
+/* ═══════════════════════════════════
+   SLIDE 2 — SOCIOS
+═══════════════════════════════════ */
+#s2{background:linear-gradient(160deg,#030B28 0%,#0B1F52 50%,#071640 100%);}
+
+#s2 .inner{
+  display:flex;flex-direction:column;align-items:center;
+  height:100%;width:100%;padding:60px 40px 50px;
+  justify-content:space-between;
+}
+#s2 .header{display:flex;flex-direction:column;align-items:center;gap:12px;}
+#s2 .eyebrow2{font-size:18px;font-weight:600;letter-spacing:0.2em;color:var(--electric);text-transform:uppercase;}
+#s2 .title2{
+  font-size:78px;font-weight:900;line-height:1.0;
+  color:var(--white);text-align:center;letter-spacing:-0.02em;
+}
+#s2 .sub2{font-size:28px;font-weight:400;color:rgba(248,249,255,0.6);text-align:center;margin-top:6px;}
+#s2 .divider{width:80px;height:3px;background:var(--electric);border-radius:2px;margin-top:10px;}
+
+#s2 .cards-row{
+  display:flex;gap:40px;align-items:center;justify-content:center;
+  width:100%;
+}
+#s2 .partner-card{
+  width:460px;
+  background:rgba(8,14,30,0.95);
+  border:2px solid rgba(26,86,204,0.3);
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(26,86,204,0.1) inset;
+}
+#s2 .partner-card .photo{
+  width:100%;height:420px;object-fit:cover;object-position:top;
+  display:block;
+}
+#s2 .partner-card .info{padding:28px 30px;text-align:center;}
+#s2 .partner-card .p-name{font-size:36px;font-weight:800;color:var(--white);}
+#s2 .partner-card .p-role{font-size:18px;font-weight:500;color:var(--electric);margin-top:6px;}
+#s2 .partner-card .p-line{
+  width:60%;height:3px;background:var(--electric);
+  border-radius:2px;margin:16px auto 0;opacity:0.5;
+}
+
+#s2 .vs-line{
+  width:3px;height:400px;
+  background:linear-gradient(180deg,transparent,var(--electric),transparent);
+  border-radius:2px;opacity:0.4;
+}
+
+#s2 .logo-bot{height:50px;opacity:0.6;margin-top:10px;}
+
+/* ═══════════════════════════════════
+   SLIDE 3 — CIERRE / CTA
+═══════════════════════════════════ */
+#s3{background:linear-gradient(160deg,#03081C 0%,#0B1840 55%,#020510 100%);}
+
+#s3 .grid-bg{
+  position:absolute;inset:0;z-index:1;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 95px,rgba(26,86,204,0.06) 95px,rgba(26,86,204,0.06) 96px),
+    repeating-linear-gradient(90deg,transparent,transparent 95px,rgba(26,86,204,0.06) 95px,rgba(26,86,204,0.06) 96px);
+}
+#s3 .cf{position:absolute;width:120px;height:120px;z-index:2;}
+#s3 .cf.tl{top:70px;left:30px;border-top:3px solid var(--electric);border-left:3px solid var(--electric);}
+#s3 .cf.br{bottom:70px;right:30px;border-bottom:3px solid var(--electric);border-right:3px solid var(--electric);}
+
+#s3 .inner{
+  display:flex;flex-direction:column;align-items:center;
+  height:100%;width:100%;padding:80px 40px 60px;
+  justify-content:center;gap:40px;
+}
+#s3 .eyebrow3{font-size:18px;font-weight:600;letter-spacing:0.2em;color:var(--electric);text-transform:uppercase;}
+#s3 .title3{
+  font-size:80px;font-weight:900;line-height:1.0;
+  color:var(--white);text-align:center;letter-spacing:-0.02em;
+}
+#s3 .stats-row{display:flex;gap:80px;margin:20px 0;}
+#s3 .stat{display:flex;flex-direction:column;align-items:center;gap:8px;}
+#s3 .stat-val{font-size:80px;font-weight:900;color:var(--electric);line-height:1;}
+#s3 .stat-lbl{font-size:20px;font-weight:700;color:var(--white);letter-spacing:0.1em;}
+#s3 .stat-line{width:50px;height:3px;background:var(--electric);border-radius:2px;opacity:0.6;}
+
+#s3 .cta-btn{
+  font-size:24px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--white);background:var(--electric);
+  padding:24px 60px;border-radius:100px;
+  box-shadow:0 8px 40px rgba(26,86,204,0.5);
+  margin-top:10px;
+}
+#s3 .cta-sec{
+  font-size:20px;font-weight:500;color:rgba(248,249,255,0.6);margin-top:8px;
+}
+
+#s3 .logo-final{height:70px;opacity:0.8;margin-top:20px;}
+#s3 .tagline{font-size:18px;font-weight:600;color:var(--electric);letter-spacing:0.15em;margin-top:10px;}
+</style>
 </head>
 <body>
-    <div id="canvas-container">
-        <canvas id="three-canvas" width="1080" height="1920"></canvas>
-        <canvas id="overlay" width="1080" height="1920"></canvas>
+
+<div id="stage">
+  <div id="pb"></div>
+  <button class="nav-btn" id="np">&#8249;</button>
+  <button class="nav-btn" id="nn">&#8250;</button>
+  <div id="pi">&#10074;&#10074;</div>
+
+  <div id="slides">
+
+    <!-- SLIDE 1: PRESENTACION -->
+    <div class="slide" id="s1">
+      <div class="noise"></div>
+      <div class="curve-divider">
+        <svg viewBox="0 0 1080 80" preserveAspectRatio="none">
+          <path d="M0,80 C360,0 720,0 1080,80 L1080,80 L0,80 Z" fill="#0B1F52"/>
+        </svg>
+      </div>
+      <div class="inner">
+        <div class="top-section">
+          <img class="logo-img" src="assets/logo.png" alt="INERTIX"
+            onerror="this.outerHTML='<div style=\"font-size:60px;font-weight:900;color:#0B1F52;letter-spacing:0.05em\">INERT<span style=\"color:#1A56CC\">IX</span></div>'">
+          <div class="eyebrow">Ingenieria &amp; Construccion</div>
+          <div class="title">Transformando<br>Bolivia</div>
+          <div class="sub">Soluciones tecnicas al mas alto nivel</div>
+        </div>
+        <div class="bottom-section">
+          <div class="services-grid">
+            <div class="svc-card">
+              <img src="assets/1.png" alt="Ingenieria" onerror="this.style.display='none'">
+              <div class="svc-name">Ingenieria y<br>Construccion</div>
+              <div class="svc-keys">Estructuras<br>Sismica<br>Supervision</div>
+            </div>
+            <div class="svc-card">
+              <img src="assets/2.png" alt="Importacion" onerror="this.style.display='none'">
+              <div class="svc-name">Importacion</div>
+              <div class="svc-keys">Materiales<br>Equipos<br>Logistica</div>
+            </div>
+            <div class="svc-card">
+              <img src="assets/3.png" alt="Inmobiliaria" onerror="this.style.display='none'">
+              <div class="svc-name">Inmobiliaria</div>
+              <div class="svc-keys">Proyectos<br>Terrenos<br>Venta</div>
+            </div>
+            <div class="svc-card">
+              <img src="assets/4.png" alt="Software" onerror="this.style.display='none'">
+              <div class="svc-name">Software</div>
+              <div class="svc-keys">Apps<br>Calculo<br>Automatizacion</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="controls">
-        <button class="btn" id="btn-play">&#9654; PLAY</button>
-        <button class="btn" id="btn-record">&#9679; GRABAR</button>
-        <span id="status">Listo</span>
-        <span id="timer">0:00</span>
+
+    <!-- SLIDE 2: SOCIOS -->
+    <div class="slide" id="s2">
+      <div class="noise"></div>
+      <div class="inner">
+        <div class="header">
+          <div class="eyebrow2">Equipo INERTIX</div>
+          <div class="title2">Nuestros Socios</div>
+          <div class="sub2">Dos ingenieros, una vision</div>
+          <div class="divider"></div>
+        </div>
+        <div class="cards-row">
+          <div class="partner-card">
+            <img class="photo" src="assets/socio1.png" alt="Ing. Samuel"
+              onerror="this.style.height='420px';this.style.background='#0B1F52'">
+            <div class="info">
+              <div class="p-name">ING. SAMUEL</div>
+              <div class="p-role">ESTRUCTURAL - SISMICA</div>
+              <div class="p-line"></div>
+            </div>
+          </div>
+          <div class="vs-line"></div>
+          <div class="partner-card">
+            <img class="photo" src="assets/socio2.png" alt="Ing. Carlos"
+              onerror="this.style.height='420px';this.style.background='#0B1F52'">
+            <div class="info">
+              <div class="p-name">ING. CARLOS</div>
+              <div class="p-role">CIVIL - VIAL - OBRAS</div>
+              <div class="p-line"></div>
+            </div>
+          </div>
+        </div>
+        <img class="logo-bot" src="assets/logo.png" alt="INERTIX"
+          onerror="this.outerHTML='<div style=\"font-size:30px;font-weight:900;color:rgba(248,249,255,0.5)\">INERT<span style=\"color:rgba(26,86,204,0.6)\">IX</span></div>'">
+      </div>
     </div>
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
-        }
-    }
-    </script>
-    <script type="module" src="app.js"></script>
+
+    <!-- SLIDE 3: CIERRE -->
+    <div class="slide" id="s3">
+      <div class="noise"></div>
+      <div class="grid-bg"></div>
+      <div class="cf tl"></div>
+      <div class="cf br"></div>
+      <div class="inner">
+        <div class="eyebrow3">Recursos - Innovacion</div>
+        <div class="title3">Herramientas<br>para Bolivia</div>
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-val">&infin;</div>
+            <div class="stat-lbl">VISION</div>
+            <div class="stat-line"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">100%</div>
+            <div class="stat-lbl">DEDICACION</div>
+            <div class="stat-line"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">01</div>
+            <div class="stat-lbl">EMPRESA</div>
+            <div class="stat-line"></div>
+          </div>
+        </div>
+        <div class="cta-btn">CONTACTANOS AHORA</div>
+        <div class="cta-sec">Ver Proyectos</div>
+        <img class="logo-final" src="assets/logo.png" alt="INERTIX"
+          onerror="this.outerHTML='<div style=\"font-size:44px;font-weight:900;color:var(--white)\">INERT<span style=\"color:var(--electric)\">IX</span></div>'">
+        <div class="tagline">INGENIERIA - BOLIVIA - INNOVACION</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var N=3, DUR=3300;
+var cur=0, playing=true, raf=null, t0=null, elapsed=0;
+var slidesEl=document.getElementById('slides');
+var pb=document.getElementById('pb');
+var pi=document.getElementById('pi');
+var segs=[];
+for(var i=0;i<N;i++){
+  var s=document.createElement('div');s.className='ps';
+  var f=document.createElement('div');f.className='pf';
+  s.appendChild(f);pb.appendChild(s);segs.push({s:s,f:f});
+}
+function updProg(idx,pct){
+  for(var i=0;i<segs.length;i++){
+    if(i<idx)segs[i].f.style.width='100%';
+    else if(i===idx)segs[i].f.style.width=(pct*100)+'%';
+    else segs[i].f.style.width='0%';
+  }
+}
+function goTo(n){
+  n=((n%N)+N)%N;cur=n;
+  slidesEl.style.transform='translateX(-'+(n*1080)+'px)';
+  elapsed=0;updProg(n,0);
+  if(raf)cancelAnimationFrame(raf);
+  if(playing)schedule();
+}
+function schedule(){t0=performance.now();tick();}
+function tick(){
+  if(!playing)return;
+  var now=performance.now();elapsed+=now-t0;t0=now;
+  var p=Math.min(elapsed/DUR,1);
+  updProg(cur,p);
+  if(p>=1)goTo(cur+1);else raf=requestAnimationFrame(tick);
+}
+function togglePlay(){
+  playing=!playing;
+  pi.textContent=playing?'\u23F8':'\u25B6';
+  if(playing){t0=performance.now();tick();}else{if(raf)cancelAnimationFrame(raf);}
+}
+goTo(0);
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(cur+1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();goTo(cur-1);}
+  if(e.key==='p'||e.key==='P')togglePlay();
+});
+document.getElementById('np').addEventListener('click',function(e){e.stopPropagation();goTo(cur-1);});
+document.getElementById('nn').addEventListener('click',function(e){e.stopPropagation();goTo(cur+1);});
+pi.addEventListener('click',function(e){e.stopPropagation();togglePlay();});
+
+// Fit to viewport
+function fit(){
+  var stage=document.getElementById('stage');
+  var sx=window.innerWidth/1080;
+  var sy=window.innerHeight/1920;
+  var sc=Math.min(sx,sy,1);
+  stage.style.transform='scale('+sc+')';
+}
+fit();
+window.addEventListener('resize',fit);
+</script>
 </body>
 </html>
